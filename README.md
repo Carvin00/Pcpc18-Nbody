@@ -115,3 +115,34 @@ void updatePos() {
 }
 ```
 
+La comunicazione che non sfrutta è le funzioni collettive è stato realizzato come segue:
+
+```c
+void falseGather() {
+	int i;
+	for(i= 0; i< worldSize; i++) {
+		if(worldRank== i) {
+			int j;
+			for(j= 0; j< worldSize; j++) {
+				if(j!= worldRank) {
+					MPI_Send(bodies+ bottomBody, nBodies, BodyMPI, j, 1, MPI_COMM_WORLD);
+					
+				}
+			}
+		} else {
+			int rec, start;
+			if(i< reminder) {
+				rec= chunk+1;
+				start= rec*i; 
+			} else {
+				rec= chunk;
+				start= rec* i+ reminder;
+			}
+			MPI_Recv(bodies+ start, rec, BodyMPI, i, 1, MPI_COMM_WORLD, &status);
+
+		}
+	}
+}
+```
+
+L'implementazione sdd:
