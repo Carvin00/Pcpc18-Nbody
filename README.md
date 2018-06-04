@@ -49,6 +49,7 @@ if (reminder== 0) {
 		bottomBody= worldRank* chunk+ reminder;
 		topBody= ((worldRank+1)* chunk)+ reminder- 1;
 		}
-}```
+}
+```
 
 Questo approccio ci permette di distribuire equamente il carico su tutti i processori evitando che ci siano processori più carichi di altri. Infatti assegiamo a tutti i processori lo stesso numero di corpi e se abbiamo corpi rimanenti (reminder) dopo questa assegnazione, questi li distribuiamo 1 a processore fino a terminarli seguendo i rank assegnati ai processori stessi. 
