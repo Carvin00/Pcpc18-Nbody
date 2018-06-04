@@ -52,4 +52,66 @@ if (reminder== 0) {
 }
 ```
 
-Questo approccio ci permette di distribuire equamente il carico su tutti i processori evitando che ci siano processori più carichi di altri. Infatti assegiamo a tutti i processori lo stesso numero di corpi e se abbiamo corpi rimanenti (reminder) dopo questa assegnazione, questi li distribuiamo 1 a processore fino a terminarli seguendo i rank assegnati ai processori stessi. 
+Questo approccio ci permette di distribuire equamente il carico su tutti i processori evitando che ci siano processori più carichi di altri. Infatti assegiamo a tutti i processori lo stesso numero di corpi e se abbiamo corpi rimanenti (reminder) dopo questa assegnazione, questi li distribuiamo assegnando 1 corpo per processore fino a terminarli seguendo i rank assegnati ai processori stessi. 
+
+I valori iniziali delle posizioni e delle velocità dei corpi vengono generati in maniera pseudocasuale. Il processo di generazione è suddiviso tra tutti i processori seguendo le partizioni prima calcolate dal bottomBody al topBody.
+
+```c
+void randomize() {
+	int i;
+	for(i = bottomBody; i<= topBody; i++) {
+		bodies[i].x = 2.0f * (rand()/ (float)RAND_MAX) - 1.0f;
+		bodies[i].y = 2.0f * (rand()/ (float)RAND_MAX) - 1.0f;
+		bodies[i].z = 2.0f * (rand()/ (float)RAND_MAX) - 1.0f;
+		bodies[i].vx = 2.0f * (rand()/ (float)RAND_MAX) - 1.0f;
+		bodies[i].vy = 2.0f * (rand()/ (float)RAND_MAX) - 1.0f;
+		bodies[i].vz = 2.0f * (rand()/ (float)RAND_MAX) - 1.0f;
+	}
+	if (reminder== 0) {
+		MPI_Allgather(bodies+ bottomBody, nBodies, BodyMPI, bodies, nBodies, BodyMPI, MPI_COMM_WORLD);
+	} else {
+		falseGather();
+	}
+
+}
+```
+
+Conclusa l'iniziazializzazione dei corpi in ogni processore è necessario fare la propagazione dei corpi generati con tutti i processori che stanno partecipando alla risoluzione del problema. Nel caso di reminder uguale a zero è posibile utilizzare la funzione collettiva **AllGather** altrimenti utilizziamo la funzione _falseGather_ che è una simulazione dell'AllGather realizzata utilizzando **send** e **revc**.
+
+Bisogna quindi calcolare le nuove posizioni e velocità dei corpi e successivamente aggiornare le posizioni. E' sempre necessario poi propagare tutte le nuove informazioni calcolate tramite **AllGather** o _falseGather_.
+
+```c
+void bodyForce() {
+	int i, j;
+	for(i= bottomBody; i<= topBody; i++) {
+		float fx= 0.0f;
+		float fy= 0.0f;
+		float fz= 0.0f;
+		for(j= 0; j< totBodies; j++) {
+			float dx = bodies[j].x- bodies[i].x;
+			float dy = bodies[j].y- bodies[i].y;
+			float dz = bodies[j].z- bodies[i].z;
+			float distSqr= dx* dx+ dy* dy+ dz* dz+ SOFTENING;
+			float invDist= 1.0f/sqrtf(distSqr);
+			float invDist3= invDist* invDist* invDist;
+
+			fx+= dx* invDist3;
+			fy+= dy* invDist3;
+			fz+= dz* invDist3;
+		}
+		bodies[i].vx+= dt*fx;
+		bodies[i].vy+= dt*fy;
+		bodies[i].vz+= dt*fz;
+	}
+}
+
+void updatePos() {
+	int i; 
+	for(i= bottomBody; i<= topBody; i++) {
+		bodies[i].x+= bodies[i].vx*dt;
+		bodies[i].y+= bodies[i].vy*dt;
+		bodies[i].z+= bodies[i].vz*dt;
+	}
+}
+```
+
