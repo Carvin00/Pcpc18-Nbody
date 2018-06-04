@@ -38,8 +38,7 @@ int test=0;		//If 1 status of bodies will be printed
 int outputFreq=1;	//Frequency of output printed to check the simulation progress only if test=1
 
 //Simulation Variables
-int nBodies;		//Number of bodies for each processor only if totBodies is multiple of worldSize
-//int procBodies;		//Number of bodies for each processor when totBodies isn't multiple of worldSize
+int nBodies;		//Number of bodies for each processor 
 int bottomBody;		//First body for each process
 int topBody;		//Last body for each process
 int chunk;		//totBodies/worldSize used to calculate nBodies or procBodies
