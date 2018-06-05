@@ -182,6 +182,7 @@ Il parametro _totBodies_ indica il numero totale di corpi su cui stiamo effettua
 I test sono stati effettuati su delle istanze __m4.xlarge__ (4 core) d Amazon Web Service.
 Durante la fase di testing sono stati tenuti in considerazione sia fattori di Strong scaling che di Weak scaling. 
 Tutti i test sono stati effettuati 10 volte per avere dei valori più consistenti, per i risultati finali sono stati utilizzati i valori medi di tutti i tempi ottenuti per ogni caso di test. 
+Tutti i tempi raccolti documentano il tempo di esecuzione della simulazione a partire dal momento successivo alla generazione dei corpi fino al termine della simulazione stessa. 
 
 Risorse massime utilizzate:
 
