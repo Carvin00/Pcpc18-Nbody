@@ -145,4 +145,45 @@ void falseGather() {
 }
 ```
 
-L'implementazione sdd:
+L'implementazione si basa sui parametri passati in input dall'utente.
+
+```c
+void getArgs(int argc, char **argv) {
+	if( argc == 5) {
+		totBodies= strtol(argv[1], NULL, 10);
+		nIters= strtol(argv[2], NULL, 10);
+		test= atoi(argv[3]);
+		outputFreq= strtol(argv[3], NULL, 10);
+		dt=0.1f;	
+	} else if (argc==3) {
+		totBodies= strtol(argv[1], NULL, 10);
+		nIters= strtol(argv[2], NULL, 10);
+		dt=0.1f;
+	} else	{
+		if(worldRank== 0) {
+			printf("You must insert 2 arguments, 2 more are optionals: \n");
+			printf("1-- Number of bodies;\n");
+			printf("2-- Number of iterations;\n");
+			printf("3-- OPTIONAL 1 if it's a test, status of processor and bodies will be printed\n");
+			printf("4-- OPTIONAL Frequency of update about the simulation. Only with test=1\n");
+		}
+	}
+	if( totBodies<= 0 || nIters<= 0) { //Checking the correctness of the arguments
+		MPI_Finalize();
+		exit(0);
+	}
+}
+```
+
+Il parametro _totBodies_ indica il numero totale di corpi su cui stiamo effettuando la simulazione, _nIters_ indica il numero totale di iterazioni. L'istante di tempo dt è fissato a 0.1 secondi, quindi tra un'iterazione e l'altra verrà considerata questa differenza di tempo. I due parametri aggiuntivi sono utilizzati per stampe di test. 
+
+### Testing 
+
+I test sono stati effettuati su delle istanze __m4.xlarge__ (4 core) d Amazon Web Service.
+Durante la fase di testing sono stati tenuti in considerazione sia fattori di Strong scaling che di Weak scaling. 
+Tutti i test sono stati effettuati 10 volte per avere dei valori più consistenti, per i risultati finali sono stati utilizzati i valori medi di tutti i tempi ottenuti per ogni caso di test. 
+
+Risorse massime utilizzate:
+
+* 8 Istanze EC2 m4.xlarge **StarCluster-Ubuntu_12.04-x86_64-hvm** - _ami-52a0c53b_
+* 32 processori (4 core per istanza)
