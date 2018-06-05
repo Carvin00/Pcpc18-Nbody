@@ -102,6 +102,7 @@ int main(int argc, char** argv) {
 		time = i*dt;
 		bodyForce();		//Update bodies velocity
 		updatePos(); 		//Update bodies positions
+		MPI_Barrier(MPI_COMM_WORLD);
 		if(reminder== 0) { 	//Each processor get the next iteration bodies
 			MPI_Allgather(bodies+ bottomBody, nBodies, BodyMPI, bodies, nBodies, BodyMPI, MPI_COMM_WORLD);
 		} else {
