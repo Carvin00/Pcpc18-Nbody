@@ -205,7 +205,7 @@ Lo Strong Scaling prevede un numero fissato di corpi con un incremento progressi
 - 50000 corpi: Non tutti i test in questo caso utilizzano le funzioni collettive, ma si alternano tra funzioni collettive e funzioni point-to-point
 Nella figura in basso è possibile osservare i risultati ottenuti durante questa fase di testing. 
 
-![Strong Scaling](strong/strongScaling.jpg)
+![Strong Scaling](strong/strongScaling.png)
 
 Come è possibile notare i due casi hanno un andamento simile mostrando che non c'è differenzia sostanziale tra i casi che ricadono nelle funzioni collettive e quelli che ricadono nelle funzioni point-to-point.
 
