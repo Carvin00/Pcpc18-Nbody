@@ -187,3 +187,71 @@ Risorse massime utilizzate:
 
 * 8 Istanze EC2 m4.xlarge **StarCluster-Ubuntu_12.04-x86_64-hvm** - _ami-52a0c53b_
 * 32 processori (4 core per istanza)
+
+Per i test il numero di iterazioni e l'istante di tempo sono stati fissati:
+- Numero di iterazioni = 10;
+- istante di tempo = 0.1;
+
+Tutti i test sono stati quindi effettuati utilizzando il seguente comando 
+```
+mpirun -np X --hostfile hostlist nbody Y 10
+```
+Dove X indica il numero di processori (1, 4, 8, 12, 16, 20, 24, 28, 32) e Y indica il numerdo di corpi su cui effettuare la simulazione (50000, 1500*X, 5000*X).
+
+## Strong Scaling
+
+Lo Strong Scaling prevede un numero fissato di corpi con un incremento progressivo dei processori per testare la scalabilità. Nel nostro caso abbiamo effettuato due casi di test:
+- 50400 corpi: Numero divisibile per tutti i valori di processori che abbiamo utilizzato, questo caso mostra i tempi quando solamente le funzioni collettive sono utilizzate
+- 50000 corpi: Non tutti i test in questo caso utilizzano le funzioni collettive, ma si alternano tra funzioni collettive e funzioni point-to-point
+Nella figura in basso è possibile osservare i risultati ottenuti durante questa fase di testing. 
+
+![Strong Scaling](strong/strongScaling.jpg)
+
+Come è possibile notare i due casi hanno un andamento simile mostrando che non c'è differenzia sostanziale tra i casi che ricadono nelle funzioni collettive e quelli che ricadono nelle funzioni point-to-point.
+
+## Weak Scaling
+
+Il Weak Scaling prevede un numero fissato di corpi per ogni processore, quindi all'incremento dei processori incrementa proporzionalmente anche il numero di corpi utilizzati per il test.
+Per il test sono stati effettuati due casi di test:
+- 1500 corpi: Test con un carico basso
+- 5000 corpi: Test con un carico alto
+Nella figura in basso è possibile osservare i risultati ottenuti durante questa fase di testing.
+
+![Weak Scaling](weak/weakScaling.png)
+
+## Fattori di efficienza della scalabilità
+
+Di seguito vengono riportati i fattodi di efficienza della scalabilità ottenuti dai test effettuati.
+Per lo Strong Scaling i fattori di scalabilità sono stati calcolati tramite la formula
+```
+t1/(N*tN)*100%
+```
+Per il Weak Scaling i fattori di scalabilità sono stati calcolati tramite la formula
+```
+(t1/tN)*100%
+```
+Con:
+- t1: tempo di esecuzione utilizzando 1 processore
+- N: numero di processori utilizzati per il caso corrente
+- tN: tempo di esecuzione utilizzando N processori
+
+I fattori di efficienza sono visualizzabili nella tabella seguente:
+
+||4|8|12|16|20|24|28|32|
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+|Strong Scaling 50400 corpi|0.9919|0.9810|0.9924|0.9688|0.5173|0.5144|0.5098|0.5108|
+|Strong Scaling 50000 corpi|0.9989|0.9874|0.9569|0.9914|0.5192|0.5114|0.5102|0.5123|
+|Weak Scaling 1500 corpi/proc|0.2478|0.1196|0.0823|0.0608|0.0259|0.0211|0.0181|0.01578|
+|Weak Scaling 5000 corpi/proc|0.2476|0.1247|0.0819|0.0604|0.0260|0.0214|0.0182|0.01610|
+
+___
+___
+
+##### Project Template
+
+- strong: cartella contenente tutti i risultati dei test dello strong scaling, 50 casi con 50000 corpi e 504 casi con 50400 corpi. Contiene inoltre anche il grafico finale dei risultati ottenuti.
+- weak: cartella contentente tutti i risultati dei test del weak scaling, 1500 casi con 1500 corpi/processore e 5000 casi con 5000 corpi/processori. Contiene inoltre anche il grafico finale dei risultati ottenuti.i
+- data: contiene file di appoggio per l'elaborazione dei dati raccolti
+- hostlist: hostfile per l'utilizzo del cluster durante il testing su AWS
+- nbody: eseguibile del programma realizzato
+- nbody.c: prodotto finale del progetto da noi svolto
