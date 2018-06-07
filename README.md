@@ -136,7 +136,7 @@ void falseGather() {
 				start= rec*i; 
 			} else {
 				rec= chunk;
-				start= rec* i+ reminder;
+				start= rec* i+ reminder;i
 			}
 			MPI_Recv(bodies+ start, rec, BodyMPI, i, 1, MPI_COMM_WORLD, &status);
 
@@ -176,6 +176,7 @@ void getArgs(int argc, char **argv) {
 ```
 
 Il parametro _totBodies_ indica il numero totale di corpi su cui stiamo effettuando la simulazione, _nIters_ indica il numero totale di iterazioni. L'istante di tempo dt è fissato a 0.1 secondi, quindi tra un'iterazione e l'altra verrà considerata questa differenza di tempo. I due parametri aggiuntivi sono utilizzati per stampe di test. 
+Il programma realizzato è stato compliato utilizzando il comando ``` mpicc nbody.c -nbody -lm``` è stato necessario utilizzare l'opzione __-lm__ per includere la libreria _math.h_. 
 
 ### Testing 
 
@@ -183,6 +184,7 @@ I test sono stati effettuati su delle istanze __m4.xlarge__ (4 core) d Amazon We
 Durante la fase di testing sono stati tenuti in considerazione sia fattori di Strong scaling che di Weak scaling. 
 Tutti i test sono stati effettuati 10 volte per avere dei valori più consistenti, per i risultati finali sono stati utilizzati i valori medi di tutti i tempi ottenuti per ogni caso di test. 
 Tutti i tempi raccolti documentano il tempo di esecuzione della simulazione a partire dal momento successivo alla generazione dei corpi fino al termine della simulazione stessa. 
+Inoltre i tempi dei test sono stati raccolti in secondi con 6 cifre decimali ma i grafi mostrati nelle sezioni successive mostrano i dati in numero di processori/millisecondi.  
 
 Risorse massime utilizzate:
 
