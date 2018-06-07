@@ -176,7 +176,8 @@ void getArgs(int argc, char **argv) {
 ```
 
 Il parametro _totBodies_ indica il numero totale di corpi su cui stiamo effettuando la simulazione, _nIters_ indica il numero totale di iterazioni. L'istante di tempo dt è fissato a 0.1 secondi, quindi tra un'iterazione e l'altra verrà considerata questa differenza di tempo. I due parametri aggiuntivi sono utilizzati per stampe di test. 
-Il programma realizzato è stato compliato utilizzando il comando ``` mpicc nbody.c -nbody -lm``` è stato necessario utilizzare l'opzione __-lm__ per includere la libreria _math.h_. 
+Il programma realizzato è stato compliato utilizzando il comando ``` mpicc nbody.c -o nbody -lm``` è stato necessario utilizzare l'opzione __-lm__ per includere la libreria _math.h_. 
+
 
 ### Testing 
 
